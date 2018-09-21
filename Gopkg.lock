@@ -2,12 +2,15 @@
 
 
 [[projects]]
+  digest = "1:d867dfa6751c8d7a435821ad3b736310c2ed68945d05b50fb9d23aee0540c8cc"
   name = "github.com/Sirupsen/logrus"
   packages = ["."]
+  pruneopts = "UT"
   revision = "3e01752db0189b9157070a0e1668a620f9a85da2"
   version = "v1.0.6"
 
 [[projects]]
+  digest = "1:90e833edde193fb219629542177bfa7f75ef8da7f2f407c9684b7f457a2b31ac"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -40,41 +43,96 @@
     "private/protocol/rest",
     "private/protocol/xml/xmlutil",
     "service/cloudwatchlogs",
+    "service/cloudwatchlogs/cloudwatchlogsiface",
     "service/ec2",
-    "service/sts"
+    "service/sts",
   ]
+  pruneopts = "UT"
   revision = "34699de98eac41fa94737f6ce7b83d7a621c2634"
   version = "v1.15.36"
 
 [[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "UT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
+
+[[projects]]
+  digest = "1:5abd6a22805b1919f6a6bca0ae58b13cef1f3412812f38569978f43ef02743d4"
   name = "github.com/go-ini/ini"
   packages = ["."]
+  pruneopts = "UT"
   revision = "5cf292cae48347c2490ac1a58fe36735fb78df7e"
   version = "v1.38.2"
 
 [[projects]]
+  digest = "1:e22af8c7518e1eab6f2eab2b7d7558927f816262586cd6ed9f349c97a6c285c4"
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
+  pruneopts = "UT"
   revision = "0b12d6b5"
 
 [[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  pruneopts = "UT"
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
+  digest = "1:ac83cf90d08b63ad5f7e020ef480d319ae890c208f8524622a2f3136e2686b02"
+  name = "github.com/stretchr/objx"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "477a77ecc69700c7cdeb1fa9e129548e1c1c393c"
+  version = "v0.1.1"
+
+[[projects]]
+  digest = "1:cf4fdb98e23a565bd82473027d37512a3d5b186fba3a1895d7e8401d8ce3ffe1"
+  name = "github.com/stretchr/testify"
+  packages = [
+    "assert",
+    "mock",
+    "require",
+  ]
+  pruneopts = "UT"
+  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
+  version = "v1.2.2"
+
+[[projects]]
   branch = "master"
+  digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
+  pruneopts = "UT"
   revision = "0e37d006457bf46f9e6692014ba72ef82c33022c"
 
 [[projects]]
   branch = "master"
+  digest = "1:e10551220bea6da5274318545537df1012268056be6484b83a3338328050cde0"
   name = "golang.org/x/sys"
   packages = [
     "unix",
-    "windows"
+    "windows",
   ]
+  pruneopts = "UT"
   revision = "ee1b12c67af419cf5a9be3bdbeea7fc1c5f32f11"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b6abe96f97c7a8e4e3c3ab582d6521c750b0d8fd1617c625bd467c4ec539b34a"
+  input-imports = [
+    "github.com/Sirupsen/logrus",
+    "github.com/aws/aws-sdk-go/aws",
+    "github.com/aws/aws-sdk-go/aws/session",
+    "github.com/aws/aws-sdk-go/service/cloudwatchlogs",
+    "github.com/aws/aws-sdk-go/service/cloudwatchlogs/cloudwatchlogsiface",
+    "github.com/aws/aws-sdk-go/service/ec2",
+    "github.com/stretchr/testify/mock",
+    "github.com/stretchr/testify/require",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

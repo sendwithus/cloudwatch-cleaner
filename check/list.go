@@ -38,3 +38,23 @@ func ListLogGroups(cwl *cloudwatchlogs.CloudWatchLogs) ([]string, error) {
 	)
 	return logGroups, err
 }
+
+func ListLogStreams(cwl *cloudwatchlogs.CloudWatchLogs, groupName string) ([]string, error) {
+
+	LogStreams := []string{}
+	Descending := true
+
+	err := cwl.DescribeLogStreamsPages(
+		&cloudwatchlogs.DescribeLogStreamsInput{
+			LogGroupName: &groupName,
+			Descending:   &Descending,
+		},
+		func(res *cloudwatchlogs.DescribeLogStreamsOutput, lastPage bool) bool {
+			for _, r := range res.LogStreams {
+				LogStreams = append(LogStreams, *r.LogStreamName)
+			}
+			return true
+		},
+	)
+	return LogStreams, err
+}

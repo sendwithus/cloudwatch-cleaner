@@ -17,11 +17,17 @@ func main() {
 	for _, region := range regions {
 		c := client.CwClient(region)
 		groupNames, _ := check.ListLogGroups(c)
+
 		for _, groupName := range groupNames {
-			retention, _ := check.CheckLogGroupsRetentionPolicy(c, groupName)
+			retention, err := check.CheckLogGroupsRetentionPolicy(c, groupName)
 			if retention != 30 {
 				setup.ChangeLogGroupsRetentionPolicy(c, groupName)
 			}
+			log.WithError(err).Error("CheckLogGroupsRetentionPolicy returned:")
+
+			// logStreamNames, err := check.ListLogStreams(c, groupName)
+			// log.WithError(err).Error("ListLogStreams returned:")
+			// fmt.Println(logStreamNames)
 		}
 	}
 }

@@ -2,32 +2,30 @@ package main
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/techdroplabs/cloudwatch-cleaner/change"
 	"github.com/techdroplabs/cloudwatch-cleaner/check"
-	"github.com/techdroplabs/cloudwatch-cleaner/client"
 )
 
 func main() {
-	cwc := client.CloudWatchClient{}
-	ec2c := client.ElasticCompute2Client{}
-	run(&cwc, &ec2c)
+	client := check.New()
+	run(client)
 }
 
-func run(cwc client.CloudWatchClientIntr, ec2c client.Ec2ClientIntr) {
-	ec2Client := ec2c.Ec2Client()
-	regions, err := check.ListAllAwsRegions(ec2Client)
+func run(client check.Client) error {
+	client.SetRegion("us-west-2") // Need to call this first to init clients.
+
+	regions, err := client.ListRegions()
 	if err != nil {
-		log.WithError(err).Error("could not list the aws regions")
+		return err
 	}
 
 	for _, region := range regions {
-		cwcClient := cwc.CwClient(region)
-		groupNames, _ := check.ListLogGroups(cwcClient)
+		client.SetRegion(region)
+		groupNames, _ := client.ListGroups()
 
 		for _, groupName := range groupNames {
-			retention, err := check.CheckLogGroupsRetentionPolicy(cwcClient, groupName)
+			retention, err := client.GetRetentionPolicy(groupName)
 			if retention != 30 {
-				change.ChangeLogGroupsRetentionPolicy(cwcClient, groupName)
+				client.SetRetentionPolicy(groupName)
 			}
 			log.WithError(err).Error("CheckLogGroupsRetentionPolicy returned:")
 
@@ -36,4 +34,5 @@ func run(cwc client.CloudWatchClientIntr, ec2c client.Ec2ClientIntr) {
 			// 	fmt.Println(logStreamNames)
 		}
 	}
+	return nil
 }

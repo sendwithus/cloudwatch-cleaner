@@ -3,40 +3,38 @@ package main
 import (
 	"testing"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/cloudwatchlogs/cloudwatchlogsiface"
-	"github.com/aws/aws-sdk-go/service/ec2"
-	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
+	"github.com/techdroplabs/cloudwatch-cleaner/check"
+
 	"github.com/stretchr/testify/mock"
 )
 
-type mockEC2 struct {
-	ec2iface.EC2API
+type mockClient struct {
+	check.Client
 	mock.Mock
 }
 
-type mockCWL struct {
-	cloudwatchlogsiface.CloudWatchLogsAPI
-	mock.Mock
+func (m *mockClient) SetRegion(region string) {
+	m.Called()
 }
 
-func (m *mockEC2) DescribeRegions(input *ec2.DescribeRegionsInput) (*ec2.DescribeRegionsOutput, error) {
-	args := m.Called(input)
-	return args.Get(0).(*ec2.DescribeRegionsOutput), args.Error(1)
+func (m *mockClient) ListRegions() ([]string, error) {
+	args := m.Called()
+	return args.Get(0).([]string), args.Error(1)
+}
+
+func (m *mockClient) ListGroups() ([]string, error) {
+	args := m.Called()
+	return args.Get(0).([]string), args.Error(1)
 }
 
 func TestRun(t *testing.T) {
-	cwl := &mockCWL{}
-	elasticComputer2 := &mockEC2{}
+	c := &mockClient{}
 
-	elasticComputer2.On("DescribeRegions", mock.Anything).Return(&ec2.DescribeRegionsOutput{
-		Regions: []*ec2.Region{
-			&ec2.Region{RegionName: aws.String("us-west-2")},
-			&ec2.Region{RegionName: aws.String("us-east-2")},
-		},
-	}, nil)
+	c.On("ListRegions").Return([]string{"us-west-2"}, nil)
+	c.On("SetRegion").Return()
+	c.On("ListGroups").Return([]string{"group-name"}, nil)
 
-	run(cwl, elasticComputer2)
+	run(c)
 
-	elasticComputer2.AssertExpectations(t)
+	c.AssertExpectations(t)
 }

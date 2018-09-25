@@ -5,13 +5,13 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
-	cwliface "github.com/aws/aws-sdk-go/service/cloudwatchlogs/cloudwatchlogsiface"
+	"github.com/aws/aws-sdk-go/service/cloudwatchlogs/cloudwatchlogsiface"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/require"
 )
 
 type mockCWL struct {
-	cwliface.CloudWatchLogsAPI
+	cloudwatchlogsiface.CloudWatchLogsAPI
 	mock.Mock
 }
 
@@ -36,7 +36,7 @@ func TestCheckLogGroupsRetentionPolicy(t *testing.T) {
 	value, err := CheckLogGroupsRetentionPolicy(cwl, "test-group")
 
 	// Assert
-	require.Nil(t, err)
-	require.Equal(t, int64(20), value)
+	assert.Nil(t, err)
+	assert.Equal(t, int64(20), value)
 	cwl.AssertExpectations(t)
 }

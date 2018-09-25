@@ -3,16 +3,16 @@ package check
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
+	"github.com/aws/aws-sdk-go/service/cloudwatchlogs/cloudwatchlogsiface"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	"github.com/techdroplabs/cloudwatch-cleaner/client"
+	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
 )
 
-func ListAllAwsRegions() ([]string, error) {
+func ListAllAwsRegions(elasticComputer2 ec2iface.EC2API) ([]string, error) {
 
-	ec2Client := client.Ec2Client()
 	regions := []string{}
 
-	region, err := ec2Client.DescribeRegions(&ec2.DescribeRegionsInput{})
+	region, err := elasticComputer2.DescribeRegions(&ec2.DescribeRegionsInput{})
 	if err != nil {
 		log.Error("Could not get aws regions: %v", err)
 	}
@@ -23,7 +23,7 @@ func ListAllAwsRegions() ([]string, error) {
 	return regions, err
 }
 
-func ListLogGroups(cwl *cloudwatchlogs.CloudWatchLogs) ([]string, error) {
+func ListLogGroups(cwl cloudwatchlogsiface.CloudWatchLogsAPI) ([]string, error) {
 
 	logGroups := []string{}
 
@@ -39,7 +39,7 @@ func ListLogGroups(cwl *cloudwatchlogs.CloudWatchLogs) ([]string, error) {
 	return logGroups, err
 }
 
-func ListLogStreams(cwl *cloudwatchlogs.CloudWatchLogs, groupName string) ([]string, error) {
+func ListLogStreams(cwl cloudwatchlogsiface.CloudWatchLogsAPI, groupName string) ([]string, error) {
 
 	LogStreams := []string{}
 	Descending := true

@@ -5,10 +5,10 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
-	cwliface "github.com/aws/aws-sdk-go/service/cloudwatchlogs/cloudwatchlogsiface"
+	"github.com/aws/aws-sdk-go/service/cloudwatchlogs/cloudwatchlogsiface"
 )
 
-func CheckLogGroupsRetentionPolicy(cwl cwliface.CloudWatchLogsAPI, groupName string) (int64, error) {
+func CheckLogGroupsRetentionPolicy(cwl cloudwatchlogsiface.CloudWatchLogsAPI, groupName string) (int64, error) {
 
 	limit := int64(50)
 

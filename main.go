@@ -8,26 +8,32 @@ import (
 )
 
 func main() {
+	cwc := client.CloudWatchClient{}
+	ec2c := client.ElasticCompute2Client{}
+	run(&cwc, &ec2c)
+}
 
-	regions, err := check.ListAllAwsRegions()
+func run(cwc client.CloudWatchClientIntr, ec2c client.Ec2ClientIntr) {
+	ec2Client := ec2c.Ec2Client()
+	regions, err := check.ListAllAwsRegions(ec2Client)
 	if err != nil {
 		log.WithError(err).Error("could not list the aws regions")
 	}
 
 	for _, region := range regions {
-		c := client.CwClient(region)
-		groupNames, _ := check.ListLogGroups(c)
+		cwcClient := cwc.CwClient(region)
+		groupNames, _ := check.ListLogGroups(cwcClient)
 
 		for _, groupName := range groupNames {
-			retention, err := check.CheckLogGroupsRetentionPolicy(c, groupName)
+			retention, err := check.CheckLogGroupsRetentionPolicy(cwcClient, groupName)
 			if retention != 30 {
-				setup.ChangeLogGroupsRetentionPolicy(c, groupName)
+				change.ChangeLogGroupsRetentionPolicy(cwcClient, groupName)
 			}
 			log.WithError(err).Error("CheckLogGroupsRetentionPolicy returned:")
 
-			// logStreamNames, err := check.ListLogStreams(c, groupName)
-			// log.WithError(err).Error("ListLogStreams returned:")
-			// fmt.Println(logStreamNames)
+			// 	logStreamNames, err := check.ListLogStreams(c, groupName)
+			// 	log.WithError(err).Error("ListLogStreams returned:")
+			// 	fmt.Println(logStreamNames)
 		}
 	}
 }

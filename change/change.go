@@ -1,11 +1,12 @@
-package setup
+package change
 
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
+	"github.com/aws/aws-sdk-go/service/cloudwatchlogs/cloudwatchlogsiface"
 )
 
-func ChangeLogGroupsRetentionPolicy(cwl *cloudwatchlogs.CloudWatchLogs, group string) error {
+func ChangeLogGroupsRetentionPolicy(cwl cloudwatchlogsiface.CloudWatchLogsAPI, group string) error {
 
 	retention := int64(30)
 

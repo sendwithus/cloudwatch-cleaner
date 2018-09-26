@@ -2,15 +2,16 @@ package main
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/techdroplabs/cloudwatch-cleaner/check"
+	"github.com/techdroplabs/cloudwatch-cleaner/change"
 )
 
 func main() {
-	client := check.New()
-	run(client)
+	client := change.New()
+	err := run(client)
+	log.WithError(err).Error("Run returned:")
 }
 
-func run(client check.Client) error {
+func run(client change.Client) error {
 	client.SetRegion("us-west-2") // Need to call this first to init clients.
 
 	regions, err := client.ListRegions()
@@ -20,18 +21,15 @@ func run(client check.Client) error {
 
 	for _, region := range regions {
 		client.SetRegion(region)
-		groupNames, _ := client.ListGroups()
+		groups, _ := client.ListGroups()
 
-		for _, groupName := range groupNames {
-			retention, err := client.GetRetentionPolicy(groupName)
+		for _, group := range groups {
+			retention, err := client.GetRetentionPolicy(group)
+			log.WithError(err).Error("GetRetentionPolicy returned:")
 			if retention != 30 {
-				client.SetRetentionPolicy(groupName)
+				err := client.SetRetentionPolicy(group)
+				log.WithError(err).Error("SetRetentionPolicy returned:")
 			}
-			log.WithError(err).Error("CheckLogGroupsRetentionPolicy returned:")
-
-			// 	logStreamNames, err := check.ListLogStreams(c, groupName)
-			// 	log.WithError(err).Error("ListLogStreams returned:")
-			// 	fmt.Println(logStreamNames)
 		}
 	}
 	return nil

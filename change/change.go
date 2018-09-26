@@ -38,7 +38,7 @@ func (c *awsClient) ListRegions() ([]string, error) {
 	regions := []string{}
 	region, err := c.ec2.DescribeRegions(&ec2.DescribeRegionsInput{})
 	if err != nil {
-		log.Error("Could not get aws regions: %v", err)
+		log.WithError(err).Error("Could not get aws regions:")
 	}
 	for _, r := range region.Regions {
 		regions = append(regions, *r.RegionName)
@@ -96,7 +96,7 @@ func (c *awsClient) GetRetentionPolicy(groupName string) (int64, error) {
 			return *group.RetentionInDays, nil
 		}
 	}
-	return int64(-1), nil
+	return int64(-1), err
 }
 
 func (c *awsClient) SetRetentionPolicy(group string) error {

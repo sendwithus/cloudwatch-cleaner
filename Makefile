@@ -13,5 +13,5 @@ test:
 .PHONY: test
 
 build:
-	GOOS=linux go build main.go
-	zip handler.zip ./lambda_handler
+	GOOS=linux go build -installsuffix cgo -o cloudwatch-cleaner
+	zip cloudwatch-cleaner.zip ./cloudwatch-cleaner

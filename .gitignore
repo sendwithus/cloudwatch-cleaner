@@ -4,6 +4,8 @@
 *.dll
 *.so
 *.dylib
+cloudwatch-cleaner.*
+cloudwatch-cleaner
 
 # Test binary, build with `go test -c`
 *.test

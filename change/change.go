@@ -1,6 +1,8 @@
 package change
 
 import (
+	"strconv"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -12,11 +14,12 @@ import (
 
 type Client interface {
 	SetRegion(region string)
+	ConvertToInt64(days string) (int64, error)
 	ListRegions() ([]string, error)
 	ListGroups() ([]string, error)
 	ListStreams(group string) ([]string, error)
 	GetRetentionPolicy(group string) (int64, error)
-	SetRetentionPolicy(group string) error
+	SetRetentionPolicy(retention int64, group string) error
 }
 
 func New() Client {
@@ -32,6 +35,14 @@ func (c *awsClient) SetRegion(region string) {
 	sess := session.Must(session.NewSession())
 	c.ec2 = ec2.New(sess, aws.NewConfig().WithRegion(region))
 	c.cwl = cloudwatchlogs.New(sess, aws.NewConfig().WithRegion(region))
+}
+
+func (c *awsClient) ConvertToInt64(days string) (int64, error) {
+	days64, err := strconv.ParseInt(days, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return days64, nil
 }
 
 func (c *awsClient) ListRegions() ([]string, error) {
@@ -99,8 +110,7 @@ func (c *awsClient) GetRetentionPolicy(groupName string) (int64, error) {
 	return int64(-1), err
 }
 
-func (c *awsClient) SetRetentionPolicy(group string) error {
-	retention := int64(30)
+func (c *awsClient) SetRetentionPolicy(retention int64, group string) error {
 
 	_, err := c.cwl.PutRetentionPolicy(&cloudwatchlogs.PutRetentionPolicyInput{
 		LogGroupName:    &group,

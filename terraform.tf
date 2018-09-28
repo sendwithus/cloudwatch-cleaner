@@ -26,6 +26,11 @@ resource "aws_lambda_function" "cloudwatch_cleaner_lambda" {
   source_code_hash = "${base64sha256(file("cloudwatch-cleaner.zip"))}"
   runtime          = "go1.x"
   memory_size      = 128
+  environment {
+    variables = {
+      RETENTION_DAYS = "${var.retention_days}"
+    }
+  }
 }
 
 data "aws_iam_policy" "AmazonEC2ReadOnlyAccess" {
@@ -48,7 +53,7 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_cleaner_role_CloudWatchFul
 
 resource "aws_cloudwatch_event_rule" "cloudwatch_cleaner_rule" {
   name                = "cloudwatch_cleaner_rule"
-  schedule_expression = "rate(1 day)"
+  schedule_expression = "${var.lambda_rate}"
   is_enabled          = true
 }
 
@@ -63,4 +68,12 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_cloudwatch_cleaner" {
     function_name = "${aws_lambda_function.cloudwatch_cleaner_lambda.function_name}"
     principal = "events.amazonaws.com"
     source_arn = "${aws_cloudwatch_event_rule.cloudwatch_cleaner_rule.arn}"
+}
+
+variable "retention_days" {
+  default = "30"  
+}
+
+variable "lambda_rate" {
+  default = "rate(1 day)" 
 }

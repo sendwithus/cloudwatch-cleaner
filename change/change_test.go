@@ -161,7 +161,7 @@ func TestSetRetentionPolicy(t *testing.T) {
 
 	cwlc.On("PutRetentionPolicy", mock.Anything).Return(&cloudwatchlogs.PutRetentionPolicyOutput{}, nil)
 
-	err := c.SetRetentionPolicy("test-group")
+	err := c.SetRetentionPolicy(int64(30), "test-group")
 
 	assert.Nil(t, err)
 

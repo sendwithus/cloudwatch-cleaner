@@ -3,12 +3,15 @@ package main
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/techdroplabs/cloudwatch-cleaner/change"
+	"os"
 )
 
 func main() {
 	client := change.New()
 	err := run(client)
-	log.WithError(err).Error("Run returned:")
+	if err != nil {
+		log.WithError(err).Error("Run returned:")
+	}
 }
 
 func run(client change.Client) error {
@@ -25,9 +28,15 @@ func run(client change.Client) error {
 
 		for _, group := range groups {
 			retention, err := client.GetRetentionPolicy(group)
-			log.WithError(err).Error("GetRetentionPolicy returned:")
-			if retention != 30 {
-				err := client.SetRetentionPolicy(group)
+			if err != nil {
+				log.WithError(err).Error("GetRetentionPolicy returned:")
+			}
+			retentionDays, err := client.ConvertToInt64(os.Getenv("RETENTION_DAYS"))
+			if err != nil {
+				log.WithError(err).Error("ConvertToInt64 returned:")
+			}
+			if retention != retentionDays {
+				err := client.SetRetentionPolicy(retentionDays, group)
 				log.WithError(err).Error("SetRetentionPolicy returned:")
 			}
 		}

@@ -19,11 +19,11 @@ EOF
 }
 
 resource "aws_lambda_function" "cloudwatch_cleaner_lambda" {
-  filename         = "cloudwatch-cleaner.zip"
+  filename         = "${path.module}/cloudwatch-cleaner.zip"
   function_name    = "cloudwatch-cleaner"
   role             = "${aws_iam_role.cloudwatch_cleaner_iam_role.arn}"
   handler          = "cloudwatch-cleaner"
-  source_code_hash = "${base64sha256(file("cloudwatch-cleaner.zip"))}"
+  source_code_hash = "${base64sha256(file("${path.module}/cloudwatch-cleaner.zip"))}"
   runtime          = "go1.x"
   memory_size      = 128
   environment {
@@ -71,9 +71,9 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_cloudwatch_cleaner" {
 }
 
 variable "retention_days" {
-  default = "30"  
+  default = "30"
 }
 
 variable "lambda_rate" {
-  default = "rate(1 day)" 
+  default = "rate(1 day)"
 }

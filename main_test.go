@@ -3,9 +3,9 @@ package main
 import (
 	"testing"
 
+	"github.com/sendwithus/cloudwatch-cleaner/change"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/techdroplabs/cloudwatch-cleaner/change"
 )
 
 type mockClient struct {

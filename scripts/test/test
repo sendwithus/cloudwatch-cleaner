@@ -1,6 +1,6 @@
 #!/bin/bash
 
 docker run --rm -t \
-	-v "$PWD":/go/src/github.com/techdroplabs/cloudwatch-cleaner \
-	-w /go/src/github.com/techdroplabs/cloudwatch-cleaner \
+	-v "$PWD":/go/src/github.com/sendwithus/cloudwatch-cleaner \
+	-w /go/src/github.com/sendwithus/cloudwatch-cleaner \
 	golang:latest go test -timeout 20s -race -coverprofile coverage.txt -covermode=atomic ./...

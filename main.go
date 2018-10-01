@@ -1,9 +1,10 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
-	"github.com/techdroplabs/cloudwatch-cleaner/change"
 	"os"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/sendwithus/cloudwatch-cleaner/change"
 )
 
 func main() {

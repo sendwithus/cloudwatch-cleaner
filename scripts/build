@@ -1,8 +1,8 @@
 #!/bin/bash
 
 docker run --rm -t \
-	-v "$PWD":/go/src/github.com/techdroplabs/cloudwatch-cleaner \
-	-w /go/src/github.com/techdroplabs/cloudwatch-cleaner \
+	-v "$PWD":/go/src/github.com/sendwithus/cloudwatch-cleaner \
+	-w /go/src/github.com/sendwithus/cloudwatch-cleaner \
     -e GOOS=linux \
 	golang:latest go build -installsuffix cgo -o cloudwatch-cleaner
 zip cloudwatch-cleaner.zip ./cloudwatch-cleaner

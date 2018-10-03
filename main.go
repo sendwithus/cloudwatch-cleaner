@@ -38,7 +38,9 @@ func run(client change.Client) error {
 			}
 			if retention != retentionDays {
 				err := client.SetRetentionPolicy(retentionDays, group)
-				log.WithError(err).Error("SetRetentionPolicy returned:")
+				if err != nil {
+					log.WithError(err).Error("SetRetentionPolicy returned:")
+				}
 			}
 		}
 	}

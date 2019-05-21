@@ -5,6 +5,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/sendwithus/cloudwatch-cleaner/change"
+	"github.com/sendwithus/cloudwatch-cleaner/config"
 )
 
 func main() {
@@ -28,18 +29,24 @@ func run(client change.Client) error {
 		groups, _ := client.ListGroups()
 
 		for _, group := range groups {
-			retention, err := client.GetRetentionPolicy(group)
-			if err != nil {
-				log.WithError(err).Error("GetRetentionPolicy returned:")
-			}
-			retentionDays, err := client.ConvertToInt64(os.Getenv("RETENTION_DAYS"))
-			if err != nil {
-				log.WithError(err).Error("ConvertToInt64 returned:")
-			}
-			if retention != retentionDays {
-				err := client.SetRetentionPolicy(retentionDays, group)
-				if err != nil {
-					log.WithError(err).Error("SetRetentionPolicy returned:")
+			for _, whiteList := range config.WhiteList {
+				if whiteList == group {
+					log.Info("Group in white list, skipping.")
+				} else {
+					retention, err := client.GetRetentionPolicy(group)
+					if err != nil {
+						log.WithError(err).Error("GetRetentionPolicy returned:")
+					}
+					retentionDays, err := client.ConvertToInt64(os.Getenv("RETENTION_DAYS"))
+					if err != nil {
+						log.WithError(err).Error("ConvertToInt64 returned:")
+					}
+					if retention != retentionDays {
+						err := client.SetRetentionPolicy(retentionDays, group)
+						if err != nil {
+							log.WithError(err).Error("SetRetentionPolicy returned:")
+						}
+					}
 				}
 			}
 		}

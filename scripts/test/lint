@@ -3,4 +3,5 @@
 docker run --rm -t \
 	-v "$PWD":/go/src/github.com/sendwithus/cloudwatch-cleaner \
 	-w /go/src/github.com/sendwithus/cloudwatch-cleaner \
-	golangci/golangci-lint run
+    golangci/golangci-lint:v1.16.0 \
+    golangci-lint run

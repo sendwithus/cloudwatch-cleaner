@@ -26,6 +26,7 @@ resource "aws_lambda_function" "cloudwatch_cleaner_lambda" {
   source_code_hash = "${base64sha256(file("${path.module}/cloudwatch-cleaner.zip"))}"
   runtime          = "go1.x"
   memory_size      = 128
+  timeout          = 300
   environment {
     variables = {
       RETENTION_DAYS = "${var.retention_days}"

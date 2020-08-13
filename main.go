@@ -17,7 +17,7 @@ func main() {
 }
 
 func run(client change.Client) error {
-	client.SetRegion("us-west-2") // Need to call this first to init clients.
+	client.SetRegion("us-west-2")
 
 	regions, err := client.ListRegions()
 	if err != nil {
@@ -29,9 +29,9 @@ func run(client change.Client) error {
 		groups, _ := client.ListGroups()
 
 		for _, group := range groups {
-			for _, whiteList := range config.WhiteList {
-				if whiteList == group {
-					log.Info("Group in white list, skipping.")
+			for _, blockList := range config.BlockList {
+				if blockList == group {
+					log.Info("Group in blocklist, skipping.")
 				} else {
 					retention, err := client.GetRetentionPolicy(group)
 					if err != nil {

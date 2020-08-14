@@ -31,6 +31,7 @@ resource "aws_lambda_function" "cloudwatch_cleaner_lambda" {
   environment {
     variables = {
       RETENTION_DAYS = var.retention_days
+      BLOCKLIST      = var.blockList
     }
   }
 }
@@ -80,3 +81,6 @@ variable "lambda_rate" {
   default = "rate(1 day)"
 }
 
+variable "blockList" {
+  default = "deploys"
+}

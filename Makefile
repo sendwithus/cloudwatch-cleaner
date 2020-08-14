@@ -4,9 +4,9 @@ lint:
 	./scripts/test/lint
 .PHONY: lint
 
-test:
-	./scripts/test/test
-.PHONY: test
+unit:
+	./scripts/test/unit
+.PHONY: unit
 
 build:
 	./scripts/build
